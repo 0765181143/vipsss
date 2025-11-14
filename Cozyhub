@@ -1,4 +1,4 @@
---// COZY CLIENT MENU - FAKE STATS + EFFECTS
+--// COZY CLIENT MENU 
 local player = game.Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 -- GUI chính
