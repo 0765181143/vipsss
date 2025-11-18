@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anime UI</title>
+<style>
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: 'Poppins', sans-serif;
+  background: black;
+}
+
+#bgVideo {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  z-index: -1;
+  transform: translate(-50%, -50%);
+  object-fit: cover;
+  filter: brightness(60%);
+}
+
+#audio { display: none; }
+
+.ui-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 380px;
+  padding: 25px;
+  border-radius: 30px;
+  backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.08);
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 0 18px white, inset 0 0 18px white;
+  text-align: center;
+  transition: all 0.5s ease;
+  color: white;
+  z-index: 1;
+}
+
+.avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 100%;
+  margin: auto;
+  display: block;
+  border: 3px solid white;
+  object-fit: cover;
+}
+
+.bbh-sans-hegarty-regular {
+  font-family: "BBH Sans Hegarty", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.username {
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 2px solid rgba(255,255,255,0.7);
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  animation: blinkCaret 0.7s step-end infinite;
+  background: linear-gradient(90deg, #ff6ec7, #00eaff, #ffffff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 6px rgba(255,255,255,0.8),
+               0 0 12px rgba(255,110,199,0.5),
+               0 0 18px rgba(0,234,255,0.4);
+}
+
+@keyframes blinkCaret {
+  0%, 50%, 100% { border-color: rgba(255,255,255,0.7); }
+  25%, 75% { border-color: transparent; }
+}
+
+.btn {
+  width: 100%;
+  padding: 12px;
+  margin-top: 12px;
+  border-radius: 14px;
+  border: 2px solid white;
+  background: rgba(255,255,255,0.12);
+  color: white;
+  font-size: 17px;
+  cursor: pointer;
+  transition: 0.2s;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+}
+
+.btn:hover {
+  background: rgba(255,255,255,0.25);
+}
+
+.mode-switch {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid white;
+  background: rgba(255,255,255,0.15);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.3s;
+}
+
+.mode-switch:hover { background: rgba(255,255,255,0.3); }
+.mode-switch span { font-size: 18px; color: white; }
+
+.ui-box::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 30px;
+  padding: 2px;
+  background: white;
+  opacity: 0.3;
+  filter: blur(8px);
+  z-index: -1;
+}
+
+.light {
+  background: rgba(255, 255, 255, 0.25);
+  color: black;
+  border: 2px solid rgba(255,255,255,0.5);
+  box-shadow: 0 0 12px rgba(255,255,255,0.6), inset 0 0 12px rgba(255,255,255,0.3);
+}
+
+.light .btn {
+  background: rgba(0,0,0,0.12);
+  color: black;
+  border: 2px solid rgba(0,0,0,0.3);
+}
+
+.light .btn:hover { background: rgba(0,0,0,0.25); }
+.light .mode-switch span { color: black; }
+
+/* ===================== Footer Note ===================== */
+.footer-note {
+  margin-top: 18px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.6);
+  text-align: center;
+  line-height: 1.3;
+}
+</style>
+</head>
+<body>
+
+<video autoplay muted loop id="bgVideo">
+  <source src="https://cdn.discordapp.com/attachments/1440236304716533871/1440236431250423849/YTSave.com_YouTube_ai-hoshino-oshi-no-ko-Livewallpaper-4k_Media_ABv9R6KOqbQ_001_1080p.mp4?ex=691d6c33&is=691c1ab3&hm=0ab910f7c5d372cb952761e5f032639ede31c16f3d982a5dfed406a0eea4dff7&" type="video/mp4">
+</video>
+
+<audio id="bgMusic" autoplay loop>
+  <source src="https://cdn.discordapp.com/attachments/1440236304716533871/1440236520173731872/snaptik.org_audio_10bc36924c379b9244d2ff7731d9c655.mp3?ex=691d6c48&is=691c1ac8&hm=b9c1052154e47f5a4924c2d8745bee117fcceb702489269e60a0770ddee2506e&" type="audio/mp3">
+</audio>
+
+<div class="ui-box" id="UI">
+  <img class="avatar" src="https://cdn.discordapp.com/attachments/1440236304716533871/1440305370894438502/7337076636201124871_avatar.png.jpg?ex=691dac68&is=691c5ae8&hm=372522a6dcbc42adc25203744438c8d4390933a7c1eb9b46cab0b108ed02f905&">
+
+  <div class="username bbh-sans-hegarty-regular" id="username"></div>
+
+  <button class="btn" onclick="openLink('https://anotepad.com/notes/3ajgk3pc')">Moreira Method Script</button>
+  <button class="btn" onclick="openLink('https://anotepad.com/notes/cc5sck8i')">Script Tổng Hợp</button>
+  <button class="btn" onclick="openLink('https://anotepad.com/notes/dwiw6w8r')">Thái Script</button>
+  <button class="btn" onclick="openLink('https://anotepad.com/notes/a4739hw9')">Event Script menu rời</button>
+
+  <div class="mode-switch" onclick="toggleMode()">
+    <span>🌓</span>
+  </div>
+
+  <!-- Footer note -->
+  <div class="footer-note">
+    Mở server VIP cho người khác vào và nhập đúng link server VIP để tránh lỗi mờ màn hình hoặc lag
+  </div>
+</div>
+
+<script>
+function openLink(url) { window.open(url, "_blank"); }
+function toggleMode() { document.getElementById("UI").classList.toggle("light"); }
+
+/* Username typing effect */
+const usernameEl = document.getElementById('username');
+const usernameText = "Noob Roblox Script";
+let i = 0;
+function typeUsername() {
+  if(i < usernameText.length){
+    usernameEl.innerHTML += usernameText.charAt(i);
+    i++;
+    setTimeout(typeUsername, 120);
+  }
+}
+window.onload = typeUsername;
+</script>
+
+</body>
+</html>
