@@ -1,330 +1,38 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="UTF-8">
+<title>SPRINTER AI FACE PRO</title>
+<link rel="stylesheet" href="style.css">
 
-<meta name="viewport" content="width=device-width,initial-scale=1">
-
-<title>SPRINTER ULTRA PRO</title>
-
-<link rel="icon" href="https://cdn-icons-png.flaticon.com/512/1041/1041888.png">
-
-<script src="https://unpkg.com/@zxing/library@latest"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jsbarcode"></script>
-
-<style>
-
-body{
-font-family:sans-serif;
-margin:0;
-background:#f2f2f2;
-}
-
-header{
-background:black;
-color:white;
-padding:10px;
-display:flex;
-align-items:center;
-}
-
-header img{
-width:35px;
-margin-right:10px;
-}
-
-.menu{
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:10px;
-padding:15px;
-}
-
-.menu button{
-padding:20px;
-border:none;
-background:black;
-color:white;
-border-radius:10px;
-font-size:16px;
-}
-
-.box{
-background:white;
-margin:15px;
-padding:15px;
-border-radius:10px;
-}
-
-video{
-width:100%;
-border-radius:10px;
-}
-
-table{
-width:100%;
-background:white;
-}
-
-</style>
+<script defer src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
+<script defer src="app.js"></script>
 
 </head>
 
 <body>
 
-<header>
+<div class="header">
+<h1>SPRINTER AI FACE PRO</h1>
+</div>
 
-<img src="https://cdn-icons-png.flaticon.com/512/1041/1041888.png">
+<div class="panel">
 
-<h3>SPRINTER ULTRA PRO MAX</h3>
+<button onclick="startCamera()">Start Camera</button>
 
-</header>
+<button onclick="registerFace()">Register Face</button>
 
-<div class="menu">
-
-<button onclick="show('scan')">📷 Scan</button>
-
-<button onclick="show('orders')">📦 Orders</button>
-
-<button onclick="show('dash')">📊 Dashboard</button>
-
-<button onclick="show('gen')">🔳 Generate</button>
-
-<button onclick="printLabel()">🧾 Print</button>
-
-<button onclick="openMap()">📍 Map</button>
+<button onclick="clearFaces()">Clear Data</button>
 
 </div>
 
-<div id="scan" class="box">
+<div class="camera">
 
-<video id="video"></video>
-
-<p id="result">Waiting scan...</p>
+<video id="video" width="720" height="560" autoplay muted></video>
 
 </div>
 
-<div id="orders" class="box" style="display:none">
-
-<input id="manual" placeholder="Manual code">
-
-<button onclick="addManual()">Add</button>
-
-<table id="table"></table>
-
-</div>
-
-<div id="dash" class="box" style="display:none">
-
-<canvas id="chart"></canvas>
-
-</div>
-
-<div id="gen" class="box" style="display:none">
-
-<input id="code">
-
-<button onclick="makeQR()">QR</button>
-
-<button onclick="makeBarcode()">Barcode</button>
-
-<canvas id="qr"></canvas>
-
-<svg id="barcode"></svg>
-
-</div>
-
-<script>
-
-let reader
-
-function show(id){
-
-document.querySelectorAll('.box')
-.forEach(b=>b.style.display='none')
-
-document.getElementById(id).style.display='block'
-
-}
-
-function startScanner(){
-
-reader = new ZXing.BrowserMultiFormatReader()
-
-reader.decodeFromVideoDevice(
-null,
-'video',
-(result,err)=>{
-
-if(result){
-
-document.getElementById("result").innerText=result.text
-
-saveOrder(result.text)
-
-let audio=new Audio(
-"https://actions.google.com/sounds/v1/cartoon/pop.ogg"
-)
-
-audio.play()
-
-navigator.vibrate(200)
-
-loadOrders()
-loadDash()
-
-}
-
-})
-
-}
-
-function saveOrder(code){
-
-let orders=
-JSON.parse(localStorage.getItem("orders")||"[]")
-
-let o=orders.find(x=>x.code==code)
-
-if(!o){
-
-orders.push({
-code:code,
-status:"CHUA_LAY",
-date:new Date().toLocaleDateString()
-})
-
-}else{
-
-o.status="DA_LAY"
-
-}
-
-localStorage.setItem(
-"orders",
-JSON.stringify(orders)
-)
-
-}
-
-function loadOrders(){
-
-let table=document.getElementById("table")
-
-let orders=
-JSON.parse(localStorage.getItem("orders")||"[]")
-
-table.innerHTML=""
-
-orders.forEach((o,i)=>{
-
-table.innerHTML+=`
-
-<tr>
-
-<td>${o.code}</td>
-
-<td>${o.status}</td>
-
-<td>${o.date}</td>
-
-<td><button onclick="del(${i})">X</button></td>
-
-</tr>
-
-`
-
-})
-
-}
-
-function del(i){
-
-let orders=
-JSON.parse(localStorage.getItem("orders"))
-
-orders.splice(i,1)
-
-localStorage.setItem(
-"orders",
-JSON.stringify(orders)
-)
-
-loadOrders()
-
-}
-
-function addManual(){
-
-let code=document.getElementById("manual").value
-
-saveOrder(code)
-
-loadOrders()
-
-}
-
-function loadDash(){
-
-let orders=
-JSON.parse(localStorage.getItem("orders")||"[]")
-
-let da=orders.filter(x=>x.status=="DA_LAY").length
-let chua=orders.filter(x=>x.status=="CHUA_LAY").length
-
-new Chart(
-document.getElementById("chart"),
-{
-type:"doughnut",
-data:{
-labels:["DA LAY","CHUA LAY"],
-datasets:[{data:[da,chua]}]
-}
-})
-
-}
-
-function makeQR(){
-
-let t=document.getElementById("code").value
-
-QRCode.toCanvas(
-document.getElementById("qr"),
-t
-)
-
-}
-
-function makeBarcode(){
-
-let t=document.getElementById("code").value
-
-JsBarcode("#barcode",t)
-
-}
-
-function printLabel(){
-
-let code=prompt("Code")
-
-JsBarcode("#barcode",code)
-
-window.print()
-
-}
-
-function openMap(){
-
-window.open(
-"https://maps.google.com"
-)
-
-}
-
-startScanner()
-
-</script>
+<div class="log" id="log"></div>
 
 </body>
 </html>
